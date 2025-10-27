@@ -83,10 +83,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             #     'rand_perm_cam']
             perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
                 'rand_perm_cam']
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.state.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=10, rerank=engine.state.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=1, rerank=engine.state.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=10, rerank=engine.state.rerank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=10, rerank=engine.rerank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=1, rerank=engine.rerank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=10, rerank=engine.rerank)
         elif dataset == 'regdb':
             print('infrared to visible')
             eval_regdb(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
@@ -94,9 +94,9 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             eval_regdb(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
         elif dataset == 'llcm':
             print('infrared to visible')
-            eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=rank)
+            eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
             print('visible to infrared')
-            eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=rank)
+            eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
 
 
         evaluator.state.feat_list.clear()
@@ -151,7 +151,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 #     'rand_perm_cam']
                 perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
                     'rand_perm_cam']
-                mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.state.rerank)
+                mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
             elif dataset == 'regdb':
                 print('infrared to visible')
                 mAP, r1, r5, _, _ = eval_regdb(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
@@ -160,10 +160,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 r1 = (r1 + r1_) / 2
             elif dataset == 'llcm':
                 print('infrared to visible')
-                mAP, r1, r5, _, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=rank)
+                mAP, r1, r5, _, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
                 #new_all_cmc,mAP, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
                 print('visible to infrared')
-                mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=rank)
+                mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
                 r1 = (r1 + r1_) / 2
 
                 # new_all_cmc,mAP_, _= eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths,
