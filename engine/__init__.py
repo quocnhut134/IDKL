@@ -79,7 +79,9 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         # print("best rank1={:.2f}%".format(engine.state.best_rank1))
 
         if dataset == 'sysu':
-            perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
+            # perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
+            #     'rand_perm_cam']
+            perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
                 'rand_perm_cam']
             eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=rank)
             eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=10, rerank=rank)
@@ -145,7 +147,9 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             g_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
             if dataset == 'sysu':
-                perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
+                # perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
+                #     'rand_perm_cam']
+                perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
                     'rand_perm_cam']
                 mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=rank)
             elif dataset == 'regdb':

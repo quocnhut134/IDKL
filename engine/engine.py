@@ -52,7 +52,7 @@ def some_function(epoch, initial_weight_decay):
 def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
     device = torch.device("cuda") #"cuda", torch.cuda.current_device()
     
-    scaler = GradScaler(device_type="cuda", enabled=fp16)
+    scaler = GradScaler(enabled=fp16)
 
     def _process_func(engine, batch):
         model.train()
