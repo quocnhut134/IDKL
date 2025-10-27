@@ -19,13 +19,13 @@ from configs.default.strategy import strategy_cfg
 
 def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, writer=None, non_blocking=False, log_period=10,
                 save_dir="checkpoints", prefix="model", gallery_loader=None, query_loader=None,
-                eval_interval=None, start_eval=None, rerank=False):
+                eval_interval=None, start_eval=None, rerank=False, fp16=False):
     if logger is None:
         logger = logging.getLogger()
         logger.setLevel(logging.WARN)
 
     # trainer
-    trainer = create_train_engine(model, optimizer, non_blocking)
+    trainer = create_train_engine(model, optimizer, non_blocking, fp16=fp16)
 
     setattr(trainer, "rerank", rerank)
 

@@ -119,8 +119,8 @@ def train(cfg):
 
     # convert model for mixed precision training
     # model, optimizer = amp.initialize(model, optimizer, enabled=cfg.fp16, opt_level="O1")
-    if cfg.center:
-        model.center_loss.centers = model.center_loss.centers.float()
+    # if cfg.center:
+    #     model.center_loss.centers = model.center_loss.centers.float()
     lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                   milestones=cfg.lr_step,
                                                   gamma=0.1)
@@ -150,7 +150,8 @@ def train(cfg):
                          start_eval=cfg.start_eval,
                          gallery_loader=gallery_loader,
                          query_loader=query_loader,
-                         rerank=cfg.rerank)
+                         rerank=cfg.rerank,
+                         fp16=cfg.fp16)
 
     # training
     engine.run(train_loader, max_epochs=cfg.num_epoch)

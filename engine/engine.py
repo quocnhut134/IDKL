@@ -19,6 +19,7 @@ from grad_cam.utils import GradCAM, show_cam_on_image, center_crop_img
 import copy
 from torch.optim.lr_scheduler import LambdaLR
 
+from torch.amp import autocast, GradScaler
 
 # import torch
 # import numpy as np
@@ -48,8 +49,10 @@ def some_function(epoch, initial_weight_decay):
         new_weight_decay = initial_weight_decay
     return new_weight_decay
 
-def create_train_engine(model, optimizer, non_blocking=False):
+def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
     device = torch.device("cuda") #"cuda", torch.cuda.current_device()
+    
+    scaler = GradScaler(device_type="cuda", enabled=fp16)
 
     def _process_func(engine, batch):
         model.train()
@@ -78,23 +81,28 @@ def create_train_engine(model, optimizer, non_blocking=False):
 
         optimizer.zero_grad()
 
-        loss, metric = model(data, labels,
-                             cam_ids=cam_ids,
-                             epoch=epoch)
+        with autocast(device_type="cuda", enabled=fp16):
+            loss, metric = model(data, labels,
+                                cam_ids=cam_ids,
+                                epoch=epoch)
 
 
         # with amp.scale_loss(loss, optimizer) as scaled_loss:
         #     scaled_loss.backward()
 
-        loss.backward()
-        optimizer.step()
+        # loss.backward()
+        # optimizer.step()
 
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
+        
         return metric
 
     return Engine(_process_func)
 
 
-def create_eval_engine(model, non_blocking=False):
+def create_eval_engine(model, non_blocking=False, fp16=False):
     device = torch.device("cuda", torch.cuda.current_device())
 
     def _process_func(engine, batch):
@@ -105,7 +113,8 @@ def create_eval_engine(model, non_blocking=False):
         data = data.to(device, non_blocking=non_blocking)
 
         with no_grad():
-            feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
+            with autocast(device_type="cuda", enabled=fp16):
+                feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
 
         return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
 
