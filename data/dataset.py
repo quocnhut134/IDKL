@@ -32,24 +32,30 @@ class SYSUDataset(Dataset):
         num_ids = len(selected_ids)
 
         img_paths = glob(os.path.join(root, '**/*.jpg'), recursive=True)
-        img_paths = [path for path in img_paths if int(path.split('/')[-2]) in selected_ids]
+        # img_paths = [path for path in img_paths if int(path.split('/')[-2]) in selected_ids]
+        img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-2]) in selected_ids]
 
         if mode == 'gallery':
-            img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (1, 2, 4, 5)]
+            # img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (1, 2, 4, 5)]
+            img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (1, 2, 4, 5)]
         elif mode == 'query':
-            img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (3, 6)]
+            # img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (3, 6)]
+            img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (3, 6)]
 
         img_paths = sorted(img_paths)
         self.img_paths = img_paths
-        self.cam_ids = [int(path.split('/')[-3][-1]) for path in img_paths]
+        # self.cam_ids = [int(path.split('/')[-3][-1]) for path in img_paths]
+        self.cam_ids = [int(os.path.normpath(path).split(os.sep)[-3][-1]) for path in img_paths]
         self.num_ids = num_ids
         self.transform = transform
 
         if mode == 'train':
             id_map = dict(zip(selected_ids, range(num_ids)))
-            self.ids = [id_map[int(path.split('/')[-2])] for path in img_paths]
+            # self.ids = [id_map[int(path.split('/')[-2])] for path in img_paths]
+            self.ids = [id_map[int(os.path.normpath(path).split(os.sep)[-2])] for path in img_paths]
         else:
-            self.ids = [int(path.split('/')[-2]) for path in img_paths]
+            # self.ids = [int(path.split('/')[-2]) for path in img_paths]
+            self.ids = [int(os.path.normpath(path).split(os.sep)[-2]) for path in img_paths]
 
     def __len__(self):
         return len(self.img_paths)

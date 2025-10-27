@@ -46,7 +46,7 @@ def train(cfg):
                                     color_jitter=cfg.color_jitter,
                                     padding=cfg.padding,
                                     image_size=cfg.image_size,
-                                    num_workers=8)
+                                    num_workers=2)
 
     # evaluation data loader
     gallery_loader, query_loader = None, None
@@ -64,7 +64,7 @@ def train(cfg):
                                             # color_jitter=cfg.color_jitter,
                                             # padding=cfg.padding,
                                             image_size=cfg.image_size,
-                                            num_workers=8)
+                                            num_workers=2)
             gallery_loader = query_loader
 
         else:
