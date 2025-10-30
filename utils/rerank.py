@@ -10,6 +10,7 @@ def k_reciprocal_neigh( initial_rank, i, k1):
 def pairwise_distance(query_features, gallery_features):
     x = query_features
     y = gallery_features
+    print(f"Debug pairwise: x shape: {x.shape}, y shape: {y.shape}")
     m, n = x.size(0), y.size(0)
     x = x.view(m, -1)
     y = y.view(n, -1)

@@ -3,7 +3,7 @@ import logging
 import torch
 import numpy as np
 from sklearn.preprocessing import normalize
-from .rerank import re_ranking, pairwise_distance
+from utils.rerank import re_ranking, pairwise_distance
 from torch.nn import functional as F
 
 
@@ -95,21 +95,21 @@ def eval_sysu(query_feats, query_ids, query_cam_ids, gallery_feats, gallery_ids,
     query_cam_ids[np.equal(query_cam_ids, 3)] = 2
     query_feats = F.normalize(query_feats, dim=1)
 
-    gallery_indices = np.in1d(gallery_cam_ids, gallery_cams)
+    gallery_indices = np.isin(gallery_cam_ids, gallery_cams)
     
     gallery_feats = gallery_feats[gallery_indices]
     gallery_feats = F.normalize(gallery_feats, dim=1)
     gallery_cam_ids = gallery_cam_ids[gallery_indices]
     gallery_ids = gallery_ids[gallery_indices]
     gallery_img_paths = gallery_img_paths[gallery_indices]
-    gallery_names = np.array(['/'.join(os.path.splitext(path)[0].split('/')[-3:]) for path in gallery_img_paths])
+    gallery_names = np.array(['\\'.join(os.path.splitext(path)[0].split(os.sep)[-3:]) for path in gallery_img_paths])
 
     gallery_id_set = np.unique(gallery_ids)
 
     mAP, r1, r5, r10, r20 = 0, 0, 0, 0, 0
     for t in range(num_trials):
         names = get_gallery_names(perm, gallery_cams, gallery_id_set, t, num_shots)
-        flag = np.in1d(gallery_names, names)
+        flag = np.isin(gallery_names, names)
 
         g_feat = gallery_feats[flag]
         g_ids = gallery_ids[flag]
@@ -118,6 +118,7 @@ def eval_sysu(query_feats, query_ids, query_cam_ids, gallery_feats, gallery_ids,
         if rerank:
             dist_mat = re_ranking(query_feats, g_feat)
         else:
+            print(f"Debug: query_feats shape: {query_feats.shape}, g_feat shape: {g_feat.shape}")
             dist_mat = pairwise_distance(query_feats, g_feat)
             # dist_mat = -torch.mm(query_feats, g_feat.permute(1,0))
 

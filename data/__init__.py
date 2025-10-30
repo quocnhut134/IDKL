@@ -175,7 +175,7 @@ def get_test_loader(dataset, root, batch_size, image_size, num_workers=4):
                               batch_size=batch_size,
                               shuffle=False,
                               pin_memory=True,
-                              drop_last=False,
+                              drop_last=True,
                               collate_fn=collate_fn,
                               num_workers=num_workers)
 
@@ -183,7 +183,7 @@ def get_test_loader(dataset, root, batch_size, image_size, num_workers=4):
                                 batch_size=batch_size,
                                 shuffle=False,
                                 pin_memory=True,
-                                drop_last=False,
+                                drop_last=True,
                                 collate_fn=collate_fn,
                                 num_workers=num_workers)
 

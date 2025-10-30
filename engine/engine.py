@@ -105,17 +105,27 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
 def create_eval_engine(model, non_blocking=False, fp16=False):
     device = torch.device("cuda", torch.cuda.current_device())
 
+    # def _process_func(engine, batch):
+    #     model.eval()
+
+    #     data, labels, cam_ids, img_paths = batch[:4]
+
+    #     data = data.to(device, non_blocking=non_blocking)
+
+    #     with no_grad():
+    #         with autocast(device_type="cuda", enabled=fp16):
+    #             feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
+
+    #     return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
+    
     def _process_func(engine, batch):
         model.eval()
-
-        data, labels, cam_ids, img_paths = batch[:4]
-
-        data = data.to(device, non_blocking=non_blocking)
-
+        img, labels, cam_ids, img_paths, _ = batch  
+        img = img.to(device, non_blocking=non_blocking)
         with no_grad():
             with autocast(device_type="cuda", enabled=fp16):
-                feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
-
+                feat = model(img, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
+                print(f"Batch {engine.state.iteration}: img shape {img.shape}, feat shape {feat.shape}")
         return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
 
     engine = Engine(_process_func)
@@ -146,11 +156,21 @@ def create_eval_engine(model, non_blocking=False, fp16=False):
         else:
             engine.state.img_path_list.clear()
 
+    # @engine.on(Events.ITERATION_COMPLETED)
+    # def store_data(engine):
+    #     engine.state.feat_list.append(engine.state.output[0])
+    #     engine.state.id_list.append(engine.state.output[1])
+    #     engine.state.cam_list.append(engine.state.output[2])
+    #     engine.state.img_path_list.append(engine.state.output[3])
+
+    # return engine
     @engine.on(Events.ITERATION_COMPLETED)
     def store_data(engine):
-        engine.state.feat_list.append(engine.state.output[0])
-        engine.state.id_list.append(engine.state.output[1])
-        engine.state.cam_list.append(engine.state.output[2])
-        engine.state.img_path_list.append(engine.state.output[3])
-
-    return engine
+        feat = engine.state.output[0]
+        if feat.numel() > 0:  
+            engine.state.feat_list.append(feat)
+            engine.state.id_list.append(engine.state.output[1])
+            engine.state.cam_list.append(engine.state.output[2])
+            engine.state.img_path_list.append(engine.state.output[3])
+        else:
+            print(f"Warning: Skipping empty feat in batch {engine.state.iteration}")

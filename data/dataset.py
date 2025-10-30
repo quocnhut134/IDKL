@@ -6,11 +6,11 @@ import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data import Dataset
+import time
 
 '''
     Specific dataset classes for person re-identification dataset. 
 '''
-
 
 class SYSUDataset(Dataset):
     def __init__(self, root, mode='train', transform=None):
@@ -33,29 +33,44 @@ class SYSUDataset(Dataset):
 
         img_paths = glob(os.path.join(root, '**/*.jpg'), recursive=True)
         # img_paths = [path for path in img_paths if int(path.split('/')[-2]) in selected_ids]
-        img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-2]) in selected_ids]
+        # img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-2]) in selected_ids]
+        img_paths = [path for path in img_paths if int(path.replace('\\', '/').split('/')[-2]) in selected_ids]
+        
+        print(f"SYSUDataset mode={mode}, original img_paths after ID filter: {len(img_paths)}")
+        for cam in [1,2,3,4,5,6]:
+            count = sum(1 for path in img_paths if int(path.replace('\\', '/').split('/')[-3][-1]) == cam)
+            print(f"Cam {cam}: {count} images")
 
         if mode == 'gallery':
             # img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (1, 2, 4, 5)]
-            img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (1, 2, 4, 5)]
+            # img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (1, 2, 4, 5)]
+            img_paths = [path for path in img_paths if int(path.replace('\\', '/').split('/')[-3][-1]) in (1, 2, 4, 5)]
+
         elif mode == 'query':
             # img_paths = [path for path in img_paths if int(path.split('/')[-3][-1]) in (3, 6)]
-            img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (3, 6)]
+            # img_paths = [path for path in img_paths if int(os.path.normpath(path).split(os.sep)[-3][-1]) in (3, 6)]
+            img_paths = [path for path in img_paths if int(path.replace('\\', '/').split('/')[-3][-1]) in (3, 6)]
 
         img_paths = sorted(img_paths)
+        
+        print(f"SYSUDataset mode={mode}, img_paths length after filter: {len(img_paths)}")
+        
         self.img_paths = img_paths
         # self.cam_ids = [int(path.split('/')[-3][-1]) for path in img_paths]
-        self.cam_ids = [int(os.path.normpath(path).split(os.sep)[-3][-1]) for path in img_paths]
+        # self.cam_ids = [int(os.path.normpath(path).split(os.sep)[-3][-1]) for path in img_paths]
+        self.cam_ids = [int(path.replace('\\', '/').split('/')[-3][-1]) for path in img_paths]
         self.num_ids = num_ids
         self.transform = transform
 
         if mode == 'train':
             id_map = dict(zip(selected_ids, range(num_ids)))
             # self.ids = [id_map[int(path.split('/')[-2])] for path in img_paths]
-            self.ids = [id_map[int(os.path.normpath(path).split(os.sep)[-2])] for path in img_paths]
+            # self.ids = [id_map[int(os.path.normpath(path).split(os.sep)[-2])] for path in img_paths]
+            self.ids = [id_map[int(path.replace('\\', '/').split('/')[-2])] for path in img_paths]
         else:
             # self.ids = [int(path.split('/')[-2]) for path in img_paths]
-            self.ids = [int(os.path.normpath(path).split(os.sep)[-2]) for path in img_paths]
+            # self.ids = [int(os.path.normpath(path).split(os.sep)[-2]) for path in img_paths]
+            self.ids = [int(path.replace('\\', '/').split('/')[-2]) for path in img_paths]
 
     def __len__(self):
         return len(self.img_paths)

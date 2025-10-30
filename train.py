@@ -70,7 +70,7 @@ def train(cfg):
         else:
             gallery_loader, query_loader = get_test_loader(dataset=cfg.dataset,
                                                            root=cfg.data_root,
-                                                           batch_size=64,
+                                                           batch_size=4,
                                                            image_size=cfg.image_size,
                                                            num_workers=4)
 

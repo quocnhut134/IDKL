@@ -123,6 +123,13 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
 
         if lr_scheduler is not None:
             lr_scheduler.step()
+            
+        if epoch % 1 == 0:
+            metric_dict = kv_metric.compute()
+            msg = f"Epoch[{epoch}] Final Metrics: "
+            for k, v in sorted(metric_dict.items()):
+                msg += f"{k}: {v:.4f} "
+            logger.info(msg)
 
         if epoch % eval_interval == 0:
             logger.info("Model saved at {}/{}_model_{}.pth".format(save_dir, prefix, epoch))
@@ -131,7 +138,17 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             torch.cuda.empty_cache()
 
             # extract query feature
+            print(f"Query loader length: {len(query_loader)}")
+            for i, batch in enumerate(query_loader):
+                print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+                if i > 2:  
+                    break
             evaluator.run(query_loader)
+            print(f"After query run: feat_list length: {len(evaluator.state.feat_list)}")
+            if evaluator.state.feat_list:
+                print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
+            else:
+                print("Error: feat_list is empty after query run!")
 
             q_feats = torch.cat(evaluator.state.feat_list, dim=0)
             q_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
@@ -139,7 +156,17 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             q_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
             # extract gallery feature
+            print(f"Gallery loader length: {len(gallery_loader)}")
+            for i, batch in enumerate(gallery_loader):
+                print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+                if i > 2:  
+                    break
             evaluator.run(gallery_loader)
+            print(f"After gallery run: feat_list length: {len(evaluator.state.feat_list)}")
+            if evaluator.state.feat_list:
+                print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
+            else:
+                print("Error: feat_list is empty after gallery run!")
 
             g_feats = torch.cat(evaluator.state.feat_list, dim=0)
             g_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
