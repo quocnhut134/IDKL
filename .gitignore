@@ -3,3 +3,4 @@ data_dir/
 *__pycache__*/
 *.pyc
 SYSU-MM01/
+checkpoints/
