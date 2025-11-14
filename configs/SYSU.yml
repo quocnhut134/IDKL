@@ -38,7 +38,7 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.01
+lr: 0.0005
 optimizer: sgd
 num_epoch: 160 #160
 lr_step: [55, 95]
