@@ -4,8 +4,8 @@ fp16: True
 # dataset
 sample_method: identity_random #identity_uniform #identity_random
 image_size: (384, 144) #(384, 144)
-p_size: 2
-k_size: 2
+p_size: 4
+k_size: 4
 
 dataset: sysu
 
@@ -38,8 +38,8 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.00035
-optimizer: adam
+lr: 0.01
+optimizer: sgd
 num_epoch: 160 #160
 lr_step: [55, 95]
 
