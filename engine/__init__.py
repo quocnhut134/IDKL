@@ -49,6 +49,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         raise TypeError("The parameter 'validate_interval' must be type INT.")
     if not type(start_eval) == int:
         raise TypeError("The parameter 'start_eval' must be type INT.")
+    
+    print("Gallery not none") if gallery_loader is not None else print("Gallery none")
+    print("query not none") if query_loader is not None else print("query none")
+        
     if eval_interval > 0 and gallery_loader is not None and query_loader is not None:
         evaluator = create_eval_engine(model, non_blocking)
 
@@ -134,7 +138,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         if epoch % eval_interval == 0:
             logger.info("Model saved at {}/{}_model_{}.pth".format(save_dir, prefix, epoch))
 
-        if evaluator and epoch % eval_interval == 0 and epoch > start_eval:
+        if evaluator and epoch % eval_interval == 0 and epoch >= start_eval:
             torch.cuda.empty_cache()
 
             # extract query feature
