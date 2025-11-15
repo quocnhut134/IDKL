@@ -74,7 +74,11 @@ def train(cfg):
                                                            image_size=cfg.image_size,
                                                            num_workers=4)
 
-
+            print(f"Data root: {cfg.data_root}")
+            print(f"Gallery Loader Type: {type(gallery_loader)}")
+            print(f"Query Loader Type: {type(query_loader)}")
+            if gallery_loader is None or query_loader is None:
+                print("ERROR: Loaders are None! Check data_root path and data/loader.py")
 
     # model
     model = Baseline(num_classes=cfg.num_id,
