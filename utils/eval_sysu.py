@@ -102,7 +102,7 @@ def eval_sysu(query_feats, query_ids, query_cam_ids, gallery_feats, gallery_ids,
     gallery_cam_ids = gallery_cam_ids[gallery_indices]
     gallery_ids = gallery_ids[gallery_indices]
     gallery_img_paths = gallery_img_paths[gallery_indices]
-    gallery_names = np.array(['\\'.join(os.path.splitext(path)[0].split(os.sep)[-3:]) for path in gallery_img_paths])
+    gallery_names = np.array(['/'.join(os.path.splitext(path)[0].split(os.sep)[-3:]) for path in gallery_img_paths])
 
     gallery_id_set = np.unique(gallery_ids)
 

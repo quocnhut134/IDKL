@@ -33,7 +33,11 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
     # handler = ModelCheckpoint(save_dir, prefix, save_interval=eval_interval, n_saved=3, create_dir=True,
     #                           save_as_state_dict=True, require_empty=False)
     handler = ModelCheckpoint(save_dir, prefix, n_saved=3, create_dir=True,
-                              require_empty=False) #Add
+                          require_empty=False,
+                          global_step_transform=lambda engine, _: engine.state.epoch)
+    
+    # handler = ModelCheckpoint(save_dir, prefix, n_saved=3, create_dir=True,
+    #                           require_empty=False) #Add
 
     trainer.add_event_handler(Events.EPOCH_COMPLETED, handler, {"model": model})
 
@@ -50,11 +54,12 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
     if not type(start_eval) == int:
         raise TypeError("The parameter 'start_eval' must be type INT.")
     
-    print("Gallery not none") if gallery_loader is not None else print("Gallery none")
-    print("query not none") if query_loader is not None else print("query none")
+    # print("Gallery not none") if gallery_loader is not None else print("Gallery none")
+    # print("query not none") if query_loader is not None else print("query none")
         
     if eval_interval > 0 and gallery_loader is not None and query_loader is not None:
         evaluator = create_eval_engine(model, non_blocking)
+        # print(f"value from create_eval_engine: {type(evaluator)}")
 
     @trainer.on(Events.STARTED)
     def train_start(engine):
@@ -80,7 +85,8 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         g_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
         g_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
-        # print("best rank1={:.2f}%".format(engine.state.best_rank1))
+        print("best rank1={:.2f}%".format(engine.state.best_rank1))
+        logger.info("best rank1={:.2f}%".format(engine.state.best_rank1))
 
         if dataset == 'sysu':
             # perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
@@ -136,6 +142,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             logger.info(msg)
 
         if epoch % eval_interval == 0:
+            # logger.info(f"Epoch: {epoch}")
             logger.info("Model saved at {}/{}_model_{}.pth".format(save_dir, prefix, epoch))
 
         if evaluator and epoch % eval_interval == 0 and epoch >= start_eval:

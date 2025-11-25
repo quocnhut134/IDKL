@@ -174,3 +174,5 @@ def create_eval_engine(model, non_blocking=False, fp16=False):
             engine.state.img_path_list.append(engine.state.output[3])
         else:
             print(f"Warning: Skipping empty feat in batch {engine.state.iteration}")
+            
+    return engine
