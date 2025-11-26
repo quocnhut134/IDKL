@@ -72,7 +72,7 @@ def train(cfg):
                                                            root=cfg.data_root,
                                                            batch_size=4,
                                                            image_size=cfg.image_size,
-                                                           num_workers=4)
+                                                           num_workers=2)
 
             # print(f"Data root: {cfg.data_root}")
             # print(f"Gallery Loader Type: {type(gallery_loader)}")

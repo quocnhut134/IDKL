@@ -1,31 +1,56 @@
-2025-11-26 08:05:29,186 CfgNode({'prefix': 'SYSU', 'sample_method': 'identity_random', 'batch_size': 16, 'p_size': 4, 'k_size': 4, 'classification': True, 'triplet': True, 'center_cluster': False, 'center': False, 'sm_kl': True, 'bg_kl': True, 'IP': True, 'decompose': True, 'fb_dt': False, 'distalign': True, 'margin': 1.3, 'weight_KL': 2.5, 'weight_sid': 0.5, 'weight_sep': 0.5, 'update_rate': 0.2, 'optimizer': 'sgd', 'lr': 0.0005, 'wd': 0.005, 'lr_step': [55, 95], 'fp16': True, 'num_epoch': 200, 'dataset': 'sysu', 'image_size': (384, 144), 'random_flip': True, 'random_crop': True, 'random_erase': True, 'color_jitter': False, 'padding': 10, 'drop_last_stride': True, 'pattern_attention': False, 'modality_attention': 0, 'mutual_learning': False, 'rerank': False, 'num_parts': 6, 'eval_interval': 5, 'start_eval': 5, 'log_period': 150, 'resume': '', 'num_id': 395, 'num_cam': 6, 'data_root': 'data_dir\\SYSU-MM01'})
-2025-11-26 08:05:33,512 Engine run starting with max_epochs=200.
-2025-11-26 08:08:55,816 Epoch[1] Batch [150]	Speed: 11.86 samples/sec	F_p: 0.1245	IN_p: 0.0000	acc: 0.0033	bg_kl: 0.9836	ce: 6.0777	id_pl: 6.1147	pse: 0.7561	sm_kl: 0.9875	soft_dt: 0.3060	tri: 5.7634	unad: 0.4731
-2025-11-26 08:11:51,864 Epoch[1] Batch [300]	Speed: 13.63 samples/sec	F_p: 0.0647	IN_p: 0.0000	acc: 0.0067	bg_kl: 0.7750	ce: 5.9745	id_pl: 6.0347	pse: 0.7236	sm_kl: 0.7778	soft_dt: 0.0396	tri: 3.7585	unad: 0.1974
-2025-11-26 08:14:40,248 Epoch[1] Batch [450]	Speed: 14.25 samples/sec	F_p: 0.0424	IN_p: 0.0000	acc: 0.0133	bg_kl: 0.6300	ce: 5.8571	id_pl: 5.9372	pse: 0.7159	sm_kl: 0.6328	soft_dt: 0.0153	tri: 3.3814	unad: 0.1130
-2025-11-26 08:17:24,252 Epoch[1] Batch [600]	Speed: 14.64 samples/sec	F_p: 0.0294	IN_p: 0.0000	acc: 0.0179	bg_kl: 0.5353	ce: 5.7929	id_pl: 5.8697	pse: 0.7072	sm_kl: 0.5378	soft_dt: 0.0119	tri: 3.2355	unad: 0.0786
-2025-11-26 08:19:59,966 Epoch[1] Final Metrics: F_p: 0.0222 IN_p: 0.0000 acc: 0.0198 bg_kl: 0.4870 ce: 5.7297 id_pl: 5.7591 pse: 0.7006 sm_kl: 0.4908 soft_dt: 0.0123 tri: 3.1121 unad: 0.0556 
-2025-11-26 08:19:59,966 Epoch[1] Complete. Time taken: 00:14:13.964
-2025-11-26 08:35:06,276 Epoch[2] Final Metrics: F_p: 0.0112 IN_p: 0.0000 acc: 0.0632 bg_kl: 0.4036 ce: 5.5715 id_pl: 5.3577 pse: 0.6975 sm_kl: 0.4071 soft_dt: 0.0168 tri: 2.9596 unad: 0.0354 
-2025-11-26 08:35:06,277 Epoch[2] Complete. Time taken: 00:15:06.310
-2025-11-26 08:52:49,557 Epoch[3] Final Metrics: F_p: 0.0049 IN_p: 0.0000 acc: 0.0879 bg_kl: 0.3761 ce: 5.4332 id_pl: 4.9083 pse: 0.6967 sm_kl: 0.3826 soft_dt: 0.0215 tri: 2.8033 unad: 0.0200 
-2025-11-26 08:52:49,558 Epoch[3] Complete. Time taken: 00:17:43.280
-2025-11-26 09:12:41,536 Epoch[4] Final Metrics: F_p: 0.0029 IN_p: 0.0000 acc: 0.1768 bg_kl: 0.4847 ce: 5.0795 id_pl: 4.1346 pse: 0.6950 sm_kl: 0.4973 soft_dt: 0.0221 tri: 2.7650 unad: 0.0132 
-2025-11-26 09:12:41,537 Epoch[4] Complete. Time taken: 00:19:51.978
-2025-11-26 09:35:59,015 Epoch[5] Final Metrics: F_p: 0.0020 IN_p: 0.0000 acc: 0.1885 bg_kl: 0.4963 ce: 4.9921 id_pl: 3.9553 pse: 0.6957 sm_kl: 0.5092 soft_dt: 0.0237 tri: 2.6946 unad: 0.0119 
-2025-11-26 09:35:59,015 Model saved at checkpoints\sysu\SYSU/SYSU_model_5.pth
-2025-11-26 09:36:23,075 Engine run starting with max_epochs=1.
-2025-11-26 09:38:27,887 Epoch[1] Complete. Time taken: 00:01:45.557
-2025-11-26 09:38:27,889 Engine run finished. Time taken: 00:02:04.813
-2025-11-26 09:38:50,187 Engine run starting with max_epochs=1.
-2025-11-26 09:40:10,302 Epoch[1] Complete. Time taken: 00:01:00.818
-2025-11-26 09:40:10,303 Engine run finished. Time taken: 00:01:20.115
-2025-11-26 09:40:17,166 all num-shot:1 r1 precision = 8.37 , r10 precision = 40.35 , r20 precision = 57.92, mAP = 10.37
-2025-11-26 09:40:17,799 Epoch[5] Complete. Time taken: 00:27:36.262
-2025-11-26 09:44:23,890 Epoch[6] Final Metrics: F_p: 0.0016 IN_p: 0.0000 acc: 0.3404 bg_kl: 0.6282 ce: 4.5563 id_pl: 3.3108 pse: 0.6960 sm_kl: 0.6482 soft_dt: 0.0234 tri: 2.6799 unad: 0.0102 
-2025-11-26 09:44:23,891 Epoch[6] Complete. Time taken: 00:04:06.091
-2025-11-26 09:48:16,330 Epoch[7] Final Metrics: F_p: 0.0015 IN_p: 0.0000 acc: 0.3284 bg_kl: 0.6109 ce: 4.5474 id_pl: 3.3006 pse: 0.6959 sm_kl: 0.6293 soft_dt: 0.0223 tri: 2.6041 unad: 0.0110 
-2025-11-26 09:48:16,331 Epoch[7] Complete. Time taken: 00:03:52.441
-2025-11-26 09:52:43,302 Epoch[8] Final Metrics: F_p: 0.0015 IN_p: 0.0000 acc: 0.4796 bg_kl: 0.7311 ce: 4.0858 id_pl: 2.8057 pse: 0.6962 sm_kl: 0.7572 soft_dt: 0.0177 tri: 2.5888 unad: 0.0068 
-2025-11-26 09:52:43,302 Epoch[8] Complete. Time taken: 00:04:26.971
-2025-11-26 09:55:29,453 Engine run is terminating due to exception: 
+2025-11-26 20:54:38,451 CfgNode({'prefix': 'SYSU', 'sample_method': 'identity_random', 'batch_size': 16, 'p_size': 4, 'k_size': 4, 'classification': True, 'triplet': True, 'center_cluster': False, 'center': False, 'sm_kl': True, 'bg_kl': True, 'IP': True, 'decompose': True, 'fb_dt': False, 'distalign': True, 'margin': 1.3, 'weight_KL': 2.5, 'weight_sid': 0.5, 'weight_sep': 0.5, 'update_rate': 0.2, 'optimizer': 'sgd', 'lr': 0.0005, 'wd': 0.005, 'lr_step': [55, 95], 'fp16': True, 'num_epoch': 200, 'dataset': 'sysu', 'image_size': (384, 144), 'random_flip': True, 'random_crop': True, 'random_erase': True, 'color_jitter': False, 'padding': 10, 'drop_last_stride': True, 'pattern_attention': False, 'modality_attention': 0, 'mutual_learning': False, 'rerank': False, 'num_parts': 6, 'eval_interval': 5, 'start_eval': 5, 'log_period': 150, 'resume': '', 'num_id': 395, 'num_cam': 6, 'data_root': 'data_dir\\SYSU-MM01'})
+2025-11-26 20:54:41,966 Engine run starting with max_epochs=200.
+2025-11-26 20:55:50,185 Epoch[1] Batch [150]	Speed: 35.19 samples/sec	F_p: 0.1237	IN_p: 0.0000	acc: 0.0063	bg_kl: 0.9821	ce: 6.0962	id_pl: 6.1267	pse: 0.7536	sm_kl: 0.9863	soft_dt: 0.3056	tri: 5.7669	unad: 0.4549
+2025-11-26 20:56:35,926 Epoch[1] Batch [300]	Speed: 52.49 samples/sec	F_p: 0.0638	IN_p: 0.0000	acc: 0.0092	bg_kl: 0.7634	ce: 5.9782	id_pl: 6.0547	pse: 0.7254	sm_kl: 0.7664	soft_dt: 0.0550	tri: 3.8485	unad: 0.1844
+2025-11-26 20:57:21,192 Epoch[1] Batch [450]	Speed: 53.04 samples/sec	F_p: 0.0418	IN_p: 0.0000	acc: 0.0088	bg_kl: 0.5881	ce: 5.8673	id_pl: 5.9394	pse: 0.7132	sm_kl: 0.5904	soft_dt: 0.0220	tri: 3.3839	unad: 0.1069
+2025-11-26 20:58:08,401 Epoch[1] Batch [600]	Speed: 50.85 samples/sec	F_p: 0.0292	IN_p: 0.0000	acc: 0.0188	bg_kl: 0.5002	ce: 5.7906	id_pl: 5.8248	pse: 0.7045	sm_kl: 0.5027	soft_dt: 0.0209	tri: 3.2203	unad: 0.0727
+2025-11-26 20:58:53,783 Epoch[1] Final Metrics: F_p: 0.0215 IN_p: 0.0000 acc: 0.0238 bg_kl: 0.4513 ce: 5.7296 id_pl: 5.7066 pse: 0.7027 sm_kl: 0.4552 soft_dt: 0.0268 tri: 3.1038 unad: 0.0545 
+2025-11-26 20:58:53,783 Epoch[1] Complete. Time taken: 00:04:02.554
+2025-11-26 21:03:56,191 Epoch[2] Final Metrics: F_p: 0.0115 IN_p: 0.0000 acc: 0.0652 bg_kl: 0.4187 ce: 5.5359 id_pl: 5.2620 pse: 0.6981 sm_kl: 0.4229 soft_dt: 0.0508 tri: 2.9693 unad: 0.0364 
+2025-11-26 21:03:56,191 Epoch[2] Complete. Time taken: 00:05:02.407
+2025-11-26 21:07:49,028 Epoch[3] Final Metrics: F_p: 0.0052 IN_p: 0.0000 acc: 0.0843 bg_kl: 0.3924 ce: 5.3998 id_pl: 4.8133 pse: 0.6960 sm_kl: 0.3999 soft_dt: 0.0642 tri: 2.7900 unad: 0.0213 
+2025-11-26 21:07:49,028 Epoch[3] Complete. Time taken: 00:03:52.837
+2025-11-26 21:11:54,132 Epoch[4] Final Metrics: F_p: 0.0029 IN_p: 0.0000 acc: 0.1838 bg_kl: 0.5024 ce: 5.0295 id_pl: 4.0249 pse: 0.6953 sm_kl: 0.5161 soft_dt: 0.0645 tri: 2.7462 unad: 0.0139 
+2025-11-26 21:11:54,132 Epoch[4] Complete. Time taken: 00:04:05.104
+2025-11-26 21:15:44,691 Epoch[5] Final Metrics: F_p: 0.0021 IN_p: 0.0000 acc: 0.1948 bg_kl: 0.5138 ce: 4.9538 id_pl: 3.8761 pse: 0.6957 sm_kl: 0.5271 soft_dt: 0.0676 tri: 2.6718 unad: 0.0118 
+2025-11-26 21:15:44,692 Model saved at checkpoints\sysu\SYSU/SYSU_model_5.pth
+2025-11-26 21:15:55,226 Engine run starting with max_epochs=1.
+2025-11-26 21:16:36,623 Epoch[1] Complete. Time taken: 00:00:31.878
+2025-11-26 21:16:36,624 Engine run finished. Time taken: 00:00:41.396
+2025-11-26 21:16:47,211 Engine run starting with max_epochs=1.
+2025-11-26 21:17:49,272 Epoch[1] Complete. Time taken: 00:00:52.878
+2025-11-26 21:17:49,272 Engine run finished. Time taken: 00:01:02.061
+2025-11-26 21:17:56,090 all num-shot:1 r1 precision = 10.03 , r10 precision = 43.80 , r20 precision = 60.04, mAP = 11.57
+2025-11-26 21:17:56,717 Epoch[5] Complete. Time taken: 00:06:02.586
+2025-11-26 21:21:57,749 Epoch[6] Final Metrics: F_p: 0.0018 IN_p: 0.0000 acc: 0.3352 bg_kl: 0.6450 ce: 4.5181 id_pl: 3.2432 pse: 0.6958 sm_kl: 0.6661 soft_dt: 0.0707 tri: 2.6521 unad: 0.0109 
+2025-11-26 21:21:57,749 Epoch[6] Complete. Time taken: 00:04:01.030
+2025-11-26 21:25:55,782 Epoch[7] Final Metrics: F_p: 0.0018 IN_p: 0.0000 acc: 0.3197 bg_kl: 0.6280 ce: 4.5081 id_pl: 3.2513 pse: 0.6964 sm_kl: 0.6467 soft_dt: 0.0658 tri: 2.5535 unad: 0.0111 
+2025-11-26 21:25:55,782 Epoch[7] Complete. Time taken: 00:03:58.033
+2025-11-26 21:29:59,166 Epoch[8] Final Metrics: F_p: 0.0019 IN_p: 0.0000 acc: 0.4653 bg_kl: 0.7494 ce: 4.0720 id_pl: 2.7857 pse: 0.6953 sm_kl: 0.7774 soft_dt: 0.0363 tri: 2.5259 unad: 0.0071 
+2025-11-26 21:29:59,166 Epoch[8] Complete. Time taken: 00:04:03.384
+2025-11-26 21:33:51,078 Epoch[9] Final Metrics: F_p: 0.0020 IN_p: 0.0000 acc: 0.4269 bg_kl: 0.6944 ce: 4.1863 id_pl: 2.9151 pse: 0.6951 sm_kl: 0.7150 soft_dt: 0.0274 tri: 2.3644 unad: 0.0096 
+2025-11-26 21:33:51,079 Epoch[9] Complete. Time taken: 00:03:51.913
+2025-11-26 21:37:51,111 Epoch[10] Final Metrics: F_p: 0.0020 IN_p: 0.0000 acc: 0.5525 bg_kl: 0.7995 ce: 3.7414 id_pl: 2.5325 pse: 0.6955 sm_kl: 0.8279 soft_dt: 0.0298 tri: 2.3031 unad: 0.0060 
+2025-11-26 21:37:51,111 Model saved at checkpoints\sysu\SYSU/SYSU_model_10.pth
+2025-11-26 21:38:01,452 Engine run starting with max_epochs=1.
+2025-11-26 21:38:40,518 Epoch[1] Complete. Time taken: 00:00:29.629
+2025-11-26 21:38:40,519 Engine run finished. Time taken: 00:00:39.066
+2025-11-26 21:38:51,705 Engine run starting with max_epochs=1.
+2025-11-26 21:39:53,539 Epoch[1] Complete. Time taken: 00:00:52.529
+2025-11-26 21:39:53,539 Engine run finished. Time taken: 00:01:01.834
+2025-11-26 21:39:59,983 all num-shot:1 r1 precision = 13.99 , r10 precision = 48.60 , r20 precision = 64.40, mAP = 14.49
+2025-11-26 21:40:00,628 Epoch[10] Complete. Time taken: 00:06:09.549
+2025-11-26 21:43:53,254 Epoch[11] Final Metrics: F_p: 0.0020 IN_p: 0.0000 acc: 0.5088 bg_kl: 0.7431 ce: 3.9023 id_pl: 2.6753 pse: 0.6956 sm_kl: 0.7656 soft_dt: 0.0352 tri: 1.9846 unad: 0.0079 
+2025-11-26 21:43:53,254 Epoch[11] Complete. Time taken: 00:03:52.626
+2025-11-26 21:45:59,203 Current run is terminating due to exception: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+2025-11-26 21:46:00,165 Engine run is terminating due to exception: CUDA error: unknown error
+Search for `cudaErrorUnknown' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
