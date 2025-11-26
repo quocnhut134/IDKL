@@ -85,7 +85,6 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         g_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
         g_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
-        print("best rank1={:.2f}%".format(engine.state.best_rank1))
         logger.info("best rank1={:.2f}%".format(engine.state.best_rank1))
 
         if dataset == 'sysu':
@@ -151,7 +150,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             # extract query feature
             print(f"Query loader length: {len(query_loader)}")
             for i, batch in enumerate(query_loader):
-                print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+                # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
                 if i > 2:  
                     break
             evaluator.run(query_loader)
@@ -169,7 +168,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             # extract gallery feature
             print(f"Gallery loader length: {len(gallery_loader)}")
             for i, batch in enumerate(gallery_loader):
-                print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+                # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
                 if i > 2:  
                     break
             evaluator.run(gallery_loader)

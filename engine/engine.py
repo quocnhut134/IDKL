@@ -125,7 +125,7 @@ def create_eval_engine(model, non_blocking=False, fp16=False):
         with no_grad():
             with autocast(device_type="cuda", enabled=fp16):
                 feat = model(img, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
-                print(f"Batch {engine.state.iteration}: img shape {img.shape}, feat shape {feat.shape}")
+                # print(f"Batch {engine.state.iteration}: img shape {img.shape}, feat shape {feat.shape}")
         return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
 
     engine = Engine(_process_func)

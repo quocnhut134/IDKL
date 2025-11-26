@@ -118,7 +118,7 @@ def eval_sysu(query_feats, query_ids, query_cam_ids, gallery_feats, gallery_ids,
         if rerank:
             dist_mat = re_ranking(query_feats, g_feat)
         else:
-            print(f"Debug: query_feats shape: {query_feats.shape}, g_feat shape: {g_feat.shape}")
+            # print(f"Debug: query_feats shape: {query_feats.shape}, g_feat shape: {g_feat.shape}")
             dist_mat = pairwise_distance(query_feats, g_feat)
             # dist_mat = -torch.mm(query_feats, g_feat.permute(1,0))
 
