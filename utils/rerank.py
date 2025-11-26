@@ -16,7 +16,7 @@ def pairwise_distance(query_features, gallery_features):
     y = y.view(n, -1)
     dist = torch.pow(x, 2).sum(dim=1, keepdim=True).expand(m, n) + \
             torch.pow(y, 2).sum(dim=1, keepdim=True).expand(n, m).t()
-    dist.addmm_(1, -2, x, y.t())
+    dist.addmm_(x, y.t(), beta=1, alpha=-2)
     return dist
 
 def re_ranking(q_feat, g_feat, k1=20, k2=6, lambda_value=0.3, eval_type=True):
