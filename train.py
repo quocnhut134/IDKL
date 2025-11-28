@@ -125,11 +125,18 @@ def train(cfg):
     # model, optimizer = amp.initialize(model, optimizer, enabled=cfg.fp16, opt_level="O1")
     # if cfg.center:
     #     model.center_loss.centers = model.center_loss.centers.float()
-    lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
-                                                  milestones=cfg.lr_step,
-                                                  gamma=0.1)
-
-
+    # lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
+    #                                               milestones=cfg.lr_step,
+    #                                               gamma=0.1)
+    
+    if hasattr(cfg, 'scheduler_type') and cfg.scheduler_type == 'cosine':
+        lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, 
+                                                            T_max=cfg.num_epoch, 
+                                                            eta_min=0.00001)
+    else:
+        lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
+                                                      milestones=cfg.lr_step,
+                                                      gamma=0.1)
 
     if cfg.resume:
         checkpoint = torch.load(cfg.resume)

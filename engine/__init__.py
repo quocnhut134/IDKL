@@ -64,6 +64,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
     @trainer.on(Events.STARTED)
     def train_start(engine):
         setattr(engine.state, "best_rank1", 0.0)
+        setattr(engine.state, "patience_counter", 0) #early stopping
 
     @trainer.on(Events.COMPLETED)
     def train_completed(engine):
@@ -208,10 +209,21 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 # r1 = (mAP + mAP_) / 2
                 # import pdb
                 # pdb.set_trace()
+                
+            patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 20)
             
             if r1 > engine.state.best_rank1:
                 engine.state.best_rank1 = r1
+                engine.state.patience_counter = 0
                 torch.save(model.state_dict(), "{}/model_best.pth".format(save_dir))
+                logger.info(f"New Best Rank-1: {r1:.2f}%. Patience reset to 0.")
+            else:
+                engine.state.patience_counter += 1
+                logger.info(f"Patience: {engine.state.patience_counter}/{patience_limit}")
+                
+                if engine.state.patience_counter >= patience_limit:
+                    logger.warn(f"Early stopping at Epoch {epoch}. Best Rank-1: {engine.state.best_rank1:.2f}%")
+                    engine.terminate()
 
             if writer is not None:
                 writer.add_scalar('eval/mAP', mAP, epoch)

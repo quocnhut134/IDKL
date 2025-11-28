@@ -38,19 +38,24 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.0005
+lr: 0.01
 optimizer: sgd
-num_epoch: 200
-lr_step: [55, 95]
+num_epoch: 120
+lr_step: [40, 70]
+
+# Early stopping
+early_stopping_patience: 20 
+scheduler_type: 'cosine'   
 
 # augmentation
 random_flip: true
 random_crop: true
 random_erase: true
-color_jitter: false
+color_jitter: true
 padding: 10
 
 # log
 log_period: 150
-start_eval: 5
+start_eval: 20
 eval_interval: 5
+rerank: True
