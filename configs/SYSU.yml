@@ -58,4 +58,4 @@ padding: 10
 log_period: 150
 start_eval: 20
 eval_interval: 5
-rerank: True
+rerank: False

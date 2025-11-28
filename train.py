@@ -181,6 +181,10 @@ if __name__ == '__main__':
     parser.add_argument('--gpu', default='0', type=str,
                         help='gpu device ids for CUDA_VISIBLE_DEVICES')
     ####################
+    parser.add_argument('--p_size', default='2', type=str)
+    ####################
+    parser.add_argument('--k_size', default='2', type=str)
+    ####################
     args = parser.parse_args()
 
     ######################
@@ -213,7 +217,7 @@ if __name__ == '__main__':
         cfg[k] = v
 
     if cfg.sample_method == 'identity_uniform' or 'identity_random': #'identity_uniform' or 'identity_random'
-        cfg.batch_size = cfg.p_size * cfg.k_size
+        cfg.batch_size = int(args.p_size) * int(args.k_size)
 
     cfg.freeze()
 
