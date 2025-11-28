@@ -44,7 +44,7 @@ num_epoch: 120
 lr_step: [40, 70]
 
 # Early stopping
-early_stopping_patience: 20 
+early_stopping_patience: 4 
 scheduler_type: 'cosine'   
 
 # augmentation
