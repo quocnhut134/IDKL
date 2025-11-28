@@ -64,6 +64,12 @@ strategy_cfg.eval_interval = -1
 strategy_cfg.start_eval = 60
 strategy_cfg.log_period = 10
 
+# early stopping
+strategy_cfg.early_stopping_patience = 100
+
+# scheduler
+strategy_cfg.scheduler_type = 'step'
+
 # testing
 strategy_cfg.resume = ''
 #/home/zhang/E/RKJ/MAPnet/MPA-LL2-cvpr/checkpoints/regdb/RegDB/model_best.pth
