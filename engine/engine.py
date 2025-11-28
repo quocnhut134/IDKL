@@ -66,18 +66,26 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
         labels = labels.to(device, non_blocking=non_blocking)
         cam_ids = cam_ids.to(device, non_blocking=non_blocking)
 
-        warmup = False
-        if warmup == True: #学习率warmup
-            if epoch < 21:
-                # 进行warmup，逐渐增加学习率
-                warm_iteration = 30 * 213
-                lr = 0.00035 * iteration / warm_iteration
+        # warmup = False
+        # if warmup == True: #学习率warmup
+        #     if epoch < 21:
+        #         # 进行warmup，逐渐增加学习率
+        #         warm_iteration = 30 * 213
+        #         lr = 0.00035 * iteration / warm_iteration
+        #         for param_group in optimizer.param_groups:
+        #             param_group['lr'] = lr
+        #     if True: #正则化参数warmup
+        #         new_weight_decay = some_function(epoch, 0.5)
+        #         for param_group in optimizer.param_groups:
+        #             param_group['weight_decay'] = new_weight_decay
+        
+        warmup = True 
+        if warmup == True: 
+            if epoch < 10: 
+                warm_iteration = len(engine.state.dataloader) * 10 
+                current_lr = (iteration / warm_iteration) * optimizer.defaults['lr']
                 for param_group in optimizer.param_groups:
-                    param_group['lr'] = lr
-            if True: #正则化参数warmup
-                new_weight_decay = some_function(epoch, 0.5)
-                for param_group in optimizer.param_groups:
-                    param_group['weight_decay'] = new_weight_decay
+                    param_group['lr'] = current_lr
 
         optimizer.zero_grad()
 
@@ -94,6 +102,10 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
         # optimizer.step()
 
         scaler.scale(loss).backward()
+        
+        scaler.unscale_(optimizer) # Add
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
+        
         scaler.step(optimizer)
         scaler.update()
         
