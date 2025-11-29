@@ -38,14 +38,14 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.005
+lr: 0.001
 optimizer: sgd
 num_epoch: 120
 lr_step: [40, 70]
 
 # Early stopping
 early_stopping_patience: 4 
-scheduler_type: 'cosine'   
+scheduler_type: 'step' #'cosine'   
 
 # augmentation
 random_flip: true
