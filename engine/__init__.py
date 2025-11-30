@@ -210,7 +210,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 # import pdb
                 # pdb.set_trace()
                 
-            patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 4)
+            patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 10)
             
             if r1 > engine.state.best_rank1:
                 engine.state.best_rank1 = r1

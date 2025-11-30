@@ -44,7 +44,7 @@ num_epoch: 120
 lr_step: [40, 70]
 
 # Early stopping
-early_stopping_patience: 4 
+early_stopping_patience: 10 
 scheduler_type: 'step' #'cosine'   
 
 # augmentation
@@ -57,5 +57,5 @@ padding: 10
 # log
 log_period: 150
 start_eval: 20
-eval_interval: 5
+eval_interval: 2
 rerank: False
