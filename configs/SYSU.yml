@@ -40,7 +40,7 @@ modality_attention: 0
 # optimizer
 lr: 0.001
 optimizer: sgd
-num_epoch: 120
+num_epoch: 240
 lr_step: [40, 70]
 
 # Early stopping
@@ -56,6 +56,6 @@ padding: 10
 
 # log
 log_period: 150
-start_eval: 20
+start_eval: 50
 eval_interval: 2
 rerank: False
