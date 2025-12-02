@@ -127,6 +127,117 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
         kv_metric.reset()
         timer.reset()
 
+    # @trainer.on(Events.EPOCH_COMPLETED)
+    # def epoch_completed_callback(engine):
+    #     epoch = engine.state.epoch
+
+    #     if lr_scheduler is not None:
+    #         lr_scheduler.step()
+            
+    #     if epoch % 1 == 0:
+    #         metric_dict = kv_metric.compute()
+    #         msg = f"Epoch[{epoch}] Final Metrics: "
+    #         for k, v in sorted(metric_dict.items()):
+    #             msg += f"{k}: {v:.4f} "
+    #         logger.info(msg)
+
+    #     if epoch % eval_interval == 0:
+    #         # logger.info(f"Epoch: {epoch}")
+    #         logger.info("Model saved at {}/{}_model_{}.pth".format(save_dir, prefix, epoch))
+
+    #     if evaluator and epoch % eval_interval == 0 and epoch >= start_eval:
+    #         torch.cuda.empty_cache()
+
+    #         # extract query feature
+    #         print(f"Query loader length: {len(query_loader)}")
+    #         for i, batch in enumerate(query_loader):
+    #             # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+    #             if i > 2:  
+    #                 break
+    #         evaluator.run(query_loader)
+    #         print(f"After query run: feat_list length: {len(evaluator.state.feat_list)}")
+    #         if evaluator.state.feat_list:
+    #             print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
+    #         else:
+    #             print("Error: feat_list is empty after query run!")
+
+    #         q_feats = torch.cat(evaluator.state.feat_list, dim=0)
+    #         q_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
+    #         q_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
+    #         q_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
+
+    #         # extract gallery feature
+    #         print(f"Gallery loader length: {len(gallery_loader)}")
+    #         for i, batch in enumerate(gallery_loader):
+    #             # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
+    #             if i > 2:  
+    #                 break
+    #         evaluator.run(gallery_loader)
+    #         print(f"After gallery run: feat_list length: {len(evaluator.state.feat_list)}")
+    #         if evaluator.state.feat_list:
+    #             print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
+    #         else:
+    #             print("Error: feat_list is empty after gallery run!")
+
+    #         g_feats = torch.cat(evaluator.state.feat_list, dim=0)
+    #         g_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
+    #         g_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
+    #         g_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
+
+    #         if dataset == 'sysu':
+    #             # perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
+    #             #     'rand_perm_cam']
+    #             perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
+    #                 'rand_perm_cam']
+    #             mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
+    #         elif dataset == 'regdb':
+    #             print('infrared to visible')
+    #             mAP, r1, r5, _, _ = eval_regdb(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
+    #             print('visible to infrared')
+    #             mAP, r1_, r5, _, _ = eval_regdb(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
+    #             r1 = (r1 + r1_) / 2
+    #         elif dataset == 'llcm':
+    #             print('infrared to visible')
+    #             mAP, r1, r5, _, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
+    #             #new_all_cmc,mAP, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
+    #             print('visible to infrared')
+    #             mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
+    #             r1 = (r1 + r1_) / 2
+
+    #             # new_all_cmc,mAP_, _= eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths,
+    #             #                                rerank=engine.rerank)
+    #             # r1 = (mAP + mAP_) / 2
+    #             # import pdb
+    #             # pdb.set_trace()
+                
+    #         patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 10)
+            
+    #         if r1 > engine.state.best_rank1:
+    #             engine.state.best_rank1 = r1
+    #             engine.state.patience_counter = 0
+    #             torch.save(model.state_dict(), "{}/model_best.pth".format(save_dir))
+    #             logger.info(f"New Best Rank-1: {r1:.2f}%. Patience reset to 0.")
+    #         else:
+    #             engine.state.patience_counter += 1
+    #             logger.info(f"Patience: {engine.state.patience_counter}/{patience_limit}")
+                
+    #             if engine.state.patience_counter >= patience_limit:
+    #                 logger.warn(f"Early stopping at Epoch {epoch}. Best Rank-1: {engine.state.best_rank1:.2f}%")
+    #                 engine.terminate()
+
+    #         if writer is not None:
+    #             writer.add_scalar('eval/mAP', mAP, epoch)
+    #             writer.add_scalar('eval/r1', r1, epoch)
+    #             writer.add_scalar('eval/r5', r5, epoch)
+
+    #         evaluator.state.feat_list.clear()
+    #         evaluator.state.id_list.clear()
+    #         evaluator.state.cam_list.clear()
+    #         evaluator.state.img_path_list.clear()
+    #         del q_feats, q_ids, q_cams, g_feats, g_ids, g_cams
+
+    #         torch.cuda.empty_cache()
+    
     @trainer.on(Events.EPOCH_COMPLETED)
     def epoch_completed_callback(engine):
         epoch = engine.state.epoch
@@ -141,54 +252,26 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 msg += f"{k}: {v:.4f} "
             logger.info(msg)
 
-        if epoch % eval_interval == 0:
-            # logger.info(f"Epoch: {epoch}")
-            logger.info("Model saved at {}/{}_model_{}.pth".format(save_dir, prefix, epoch))
+        patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 10)
 
         if evaluator and epoch % eval_interval == 0 and epoch >= start_eval:
             torch.cuda.empty_cache()
+            logger.info("Start Evaluation")
 
-            # extract query feature
-            print(f"Query loader length: {len(query_loader)}")
-            for i, batch in enumerate(query_loader):
-                # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
-                if i > 2:  
-                    break
             evaluator.run(query_loader)
-            print(f"After query run: feat_list length: {len(evaluator.state.feat_list)}")
-            if evaluator.state.feat_list:
-                print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
-            else:
-                print("Error: feat_list is empty after query run!")
-
             q_feats = torch.cat(evaluator.state.feat_list, dim=0)
             q_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
             q_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
             q_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
-            # extract gallery feature
-            print(f"Gallery loader length: {len(gallery_loader)}")
-            for i, batch in enumerate(gallery_loader):
-                # print(f"Batch {i}: images shape: {batch['images'].shape if 'images' in batch else 'No images key'}")
-                if i > 2:  
-                    break
             evaluator.run(gallery_loader)
-            print(f"After gallery run: feat_list length: {len(evaluator.state.feat_list)}")
-            if evaluator.state.feat_list:
-                print(f"First feat shape: {evaluator.state.feat_list[0].shape}")
-            else:
-                print("Error: feat_list is empty after gallery run!")
-
             g_feats = torch.cat(evaluator.state.feat_list, dim=0)
             g_ids = torch.cat(evaluator.state.id_list, dim=0).numpy()
             g_cams = torch.cat(evaluator.state.cam_list, dim=0).numpy()
             g_img_paths = np.concatenate(evaluator.state.img_path_list, axis=0)
 
             if dataset == 'sysu':
-                # perm = sio.loadmat(os.path.join(dataset_cfg.sysu.data_root, 'exp', 'rand_perm_cam.mat'))[
-                #     'rand_perm_cam']
-                perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")[
-                    'rand_perm_cam']
+                perm = sio.loadmat("./data_dir/SYSU-MM01/exp/rand_perm_cam.mat")['rand_perm_cam']
                 mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
             elif dataset == 'regdb':
                 print('infrared to visible')
@@ -203,18 +286,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 print('visible to infrared')
                 mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
                 r1 = (r1 + r1_) / 2
-
-                # new_all_cmc,mAP_, _= eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths,
-                #                                rerank=engine.rerank)
-                # r1 = (mAP + mAP_) / 2
-                # import pdb
-                # pdb.set_trace()
-                
-            patience_limit = getattr(dataset_cfg, 'early_stopping_patience', 10)
             
             if r1 > engine.state.best_rank1:
                 engine.state.best_rank1 = r1
-                engine.state.patience_counter = 0
+                engine.state.patience_counter = 0 
                 torch.save(model.state_dict(), "{}/model_best.pth".format(save_dir))
                 logger.info(f"New Best Rank-1: {r1:.2f}%. Patience reset to 0.")
             else:
@@ -222,20 +297,18 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 logger.info(f"Patience: {engine.state.patience_counter}/{patience_limit}")
                 
                 if engine.state.patience_counter >= patience_limit:
-                    logger.warn(f"Early stopping at Epoch {epoch}. Best Rank-1: {engine.state.best_rank1:.2f}%")
+                    logger.warn(f"Early stopping. Best Rank-1: {engine.state.best_rank1:.2f}%")
                     engine.terminate()
 
             if writer is not None:
                 writer.add_scalar('eval/mAP', mAP, epoch)
                 writer.add_scalar('eval/r1', r1, epoch)
-                writer.add_scalar('eval/r5', r5, epoch)
 
             evaluator.state.feat_list.clear()
             evaluator.state.id_list.clear()
             evaluator.state.cam_list.clear()
             evaluator.state.img_path_list.clear()
             del q_feats, q_ids, q_cams, g_feats, g_ids, g_cams
-
             torch.cuda.empty_cache()
 
     @trainer.on(Events.ITERATION_COMPLETED)

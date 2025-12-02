@@ -53,10 +53,70 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
     device = torch.device("cuda") #"cuda", torch.cuda.current_device()
     
     scaler = GradScaler(enabled=fp16)
+    
+    accumulation_steps = 8
 
+    # def _process_func(engine, batch):
+    #     model.train()
+    #     #model.eval()
+
+    #     data, labels, cam_ids, img_paths, img_ids = batch
+    #     epoch = engine.state.epoch
+    #     iteration = engine.state.iteration
+
+    #     data = data.to(device, non_blocking=non_blocking)
+    #     labels = labels.to(device, non_blocking=non_blocking)
+    #     cam_ids = cam_ids.to(device, non_blocking=non_blocking)
+
+    #     # warmup = False
+    #     # if warmup == True: #学习率warmup
+    #     #     if epoch < 21:
+    #     #         # 进行warmup，逐渐增加学习率
+    #     #         warm_iteration = 30 * 213
+    #     #         lr = 0.00035 * iteration / warm_iteration
+    #     #         for param_group in optimizer.param_groups:
+    #     #             param_group['lr'] = lr
+    #     #     if True: #正则化参数warmup
+    #     #         new_weight_decay = some_function(epoch, 0.5)
+    #     #         for param_group in optimizer.param_groups:
+    #     #             param_group['weight_decay'] = new_weight_decay
+        
+    #     warmup = True 
+    #     if warmup == True: 
+    #         if epoch < 10: 
+    #             warm_iteration = len(engine.state.dataloader) * 10 
+    #             current_lr = (iteration / warm_iteration) * optimizer.defaults['lr']
+    #             for param_group in optimizer.param_groups:
+    #                 param_group['lr'] = current_lr
+
+    #     optimizer.zero_grad()
+
+    #     with autocast(device_type="cuda", enabled=fp16):
+    #         loss, metric = model(data, labels,
+    #                             cam_ids=cam_ids,
+    #                             epoch=epoch)
+
+
+    #     # with amp.scale_loss(loss, optimizer) as scaled_loss:
+    #     #     scaled_loss.backward()
+
+    #     # loss.backward()
+    #     # optimizer.step()
+
+    #     scaler.scale(loss).backward()
+        
+    #     scaler.unscale_(optimizer) # Add
+    #     torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
+        
+    #     scaler.step(optimizer)
+    #     scaler.update()
+        
+    #     return metric
+
+    # return Engine(_process_func)
+    
     def _process_func(engine, batch):
         model.train()
-        #model.eval()
 
         data, labels, cam_ids, img_paths, img_ids = batch
         epoch = engine.state.epoch
@@ -66,69 +126,114 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
         labels = labels.to(device, non_blocking=non_blocking)
         cam_ids = cam_ids.to(device, non_blocking=non_blocking)
 
-        # warmup = False
-        # if warmup == True: #学习率warmup
-        #     if epoch < 21:
-        #         # 进行warmup，逐渐增加学习率
-        #         warm_iteration = 30 * 213
-        #         lr = 0.00035 * iteration / warm_iteration
-        #         for param_group in optimizer.param_groups:
-        #             param_group['lr'] = lr
-        #     if True: #正则化参数warmup
-        #         new_weight_decay = some_function(epoch, 0.5)
-        #         for param_group in optimizer.param_groups:
-        #             param_group['weight_decay'] = new_weight_decay
-        
-        warmup = True 
+        warmup = True
         if warmup == True: 
             if epoch < 10: 
                 warm_iteration = len(engine.state.dataloader) * 10 
                 current_lr = (iteration / warm_iteration) * optimizer.defaults['lr']
                 for param_group in optimizer.param_groups:
                     param_group['lr'] = current_lr
-
-        optimizer.zero_grad()
-
+                
         with autocast(device_type="cuda", enabled=fp16):
             loss, metric = model(data, labels,
                                 cam_ids=cam_ids,
                                 epoch=epoch)
-
-
-        # with amp.scale_loss(loss, optimizer) as scaled_loss:
-        #     scaled_loss.backward()
-
-        # loss.backward()
-        # optimizer.step()
+            
+            loss = loss / accumulation_steps
 
         scaler.scale(loss).backward()
-        
-        scaler.unscale_(optimizer) # Add
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
-        
-        scaler.step(optimizer)
-        scaler.update()
+
+        if iteration % accumulation_steps == 0:
+            
+            scaler.unscale_(optimizer)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
+
+            scaler.step(optimizer)
+            scaler.update()
+            
+            optimizer.zero_grad()
         
         return metric
 
     return Engine(_process_func)
 
+# def create_eval_engine(model, non_blocking=False, fp16=False):
+#     device = torch.device("cuda", torch.cuda.current_device())
+
+#     # def _process_func(engine, batch):
+#     #     model.eval()
+
+#     #     data, labels, cam_ids, img_paths = batch[:4]
+
+#     #     data = data.to(device, non_blocking=non_blocking)
+
+#     #     with no_grad():
+#     #         with autocast(device_type="cuda", enabled=fp16):
+#     #             feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
+
+#     #     return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
+    
+#     def _process_func(engine, batch):
+#         model.eval()
+#         img, labels, cam_ids, img_paths, _ = batch  
+#         img = img.to(device, non_blocking=non_blocking)
+#         with no_grad():
+#             with autocast(device_type="cuda", enabled=fp16):
+#                 feat = model(img, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
+#                 # print(f"Batch {engine.state.iteration}: img shape {img.shape}, feat shape {feat.shape}")
+#         return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
+
+#     engine = Engine(_process_func)
+
+#     @engine.on(Events.EPOCH_STARTED)
+#     def clear_data(engine):
+#         # feat list
+#         if not hasattr(engine.state, "feat_list"):
+#             setattr(engine.state, "feat_list", [])
+#         else:
+#             engine.state.feat_list.clear()
+
+#         # id_list
+#         if not hasattr(engine.state, "id_list"):
+#             setattr(engine.state, "id_list", [])
+#         else:
+#             engine.state.id_list.clear()
+
+#         # cam list
+#         if not hasattr(engine.state, "cam_list"):
+#             setattr(engine.state, "cam_list", [])
+#         else:
+#             engine.state.cam_list.clear()
+
+#         # img path list
+#         if not hasattr(engine.state, "img_path_list"):
+#             setattr(engine.state, "img_path_list", [])
+#         else:
+#             engine.state.img_path_list.clear()
+
+#     # @engine.on(Events.ITERATION_COMPLETED)
+#     # def store_data(engine):
+#     #     engine.state.feat_list.append(engine.state.output[0])
+#     #     engine.state.id_list.append(engine.state.output[1])
+#     #     engine.state.cam_list.append(engine.state.output[2])
+#     #     engine.state.img_path_list.append(engine.state.output[3])
+
+#     # return engine
+#     @engine.on(Events.ITERATION_COMPLETED)
+#     def store_data(engine):
+#         feat = engine.state.output[0]
+#         if feat.numel() > 0:  
+#             engine.state.feat_list.append(feat)
+#             engine.state.id_list.append(engine.state.output[1])
+#             engine.state.cam_list.append(engine.state.output[2])
+#             engine.state.img_path_list.append(engine.state.output[3])
+#         else:
+#             print(f"Warning: Skipping empty feat in batch {engine.state.iteration}")
+            
+#     return engine
 
 def create_eval_engine(model, non_blocking=False, fp16=False):
     device = torch.device("cuda", torch.cuda.current_device())
-
-    # def _process_func(engine, batch):
-    #     model.eval()
-
-    #     data, labels, cam_ids, img_paths = batch[:4]
-
-    #     data = data.to(device, non_blocking=non_blocking)
-
-    #     with no_grad():
-    #         with autocast(device_type="cuda", enabled=fp16):
-    #             feat = model(data, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
-
-    #     return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
     
     def _process_func(engine, batch):
         model.eval()
@@ -137,45 +242,32 @@ def create_eval_engine(model, non_blocking=False, fp16=False):
         with no_grad():
             with autocast(device_type="cuda", enabled=fp16):
                 feat = model(img, cam_ids=cam_ids.to(device, non_blocking=non_blocking))
-                # print(f"Batch {engine.state.iteration}: img shape {img.shape}, feat shape {feat.shape}")
         return feat.data.float().cpu(), labels, cam_ids, np.array(img_paths)
 
     engine = Engine(_process_func)
 
     @engine.on(Events.EPOCH_STARTED)
     def clear_data(engine):
-        # feat list
         if not hasattr(engine.state, "feat_list"):
             setattr(engine.state, "feat_list", [])
         else:
             engine.state.feat_list.clear()
 
-        # id_list
         if not hasattr(engine.state, "id_list"):
             setattr(engine.state, "id_list", [])
         else:
             engine.state.id_list.clear()
 
-        # cam list
         if not hasattr(engine.state, "cam_list"):
             setattr(engine.state, "cam_list", [])
         else:
             engine.state.cam_list.clear()
 
-        # img path list
         if not hasattr(engine.state, "img_path_list"):
             setattr(engine.state, "img_path_list", [])
         else:
             engine.state.img_path_list.clear()
 
-    # @engine.on(Events.ITERATION_COMPLETED)
-    # def store_data(engine):
-    #     engine.state.feat_list.append(engine.state.output[0])
-    #     engine.state.id_list.append(engine.state.output[1])
-    #     engine.state.cam_list.append(engine.state.output[2])
-    #     engine.state.img_path_list.append(engine.state.output[3])
-
-    # return engine
     @engine.on(Events.ITERATION_COMPLETED)
     def store_data(engine):
         feat = engine.state.output[0]
@@ -186,5 +278,5 @@ def create_eval_engine(model, non_blocking=False, fp16=False):
             engine.state.img_path_list.append(engine.state.output[3])
         else:
             print(f"Warning: Skipping empty feat in batch {engine.state.iteration}")
-            
+
     return engine

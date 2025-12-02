@@ -25,11 +25,11 @@ fb_dt: false
 margin: 1.3
 # pattern attention
 num_parts: 6
-weight_sep: 0.5
+weight_sep: 0.1 #0.5
 # mutual learning
 update_rate: 0.2
-weight_sid: 0.5
-weight_KL: 2.5
+weight_sid: 0.8 #0.5
+weight_KL: 0.6 #2.5
 
 # architecture
 drop_last_stride: true
@@ -38,9 +38,9 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.001
+lr: 0.01
 optimizer: sgd
-num_epoch: 240
+num_epoch: 160
 lr_step: [40, 70]
 
 # Early stopping
@@ -56,6 +56,6 @@ padding: 10
 
 # log
 log_period: 150
-start_eval: 50
-eval_interval: 2
+start_eval: 40
+eval_interval: 5
 rerank: False

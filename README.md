@@ -1,28 +1,7 @@
-[CVPR2024]IDKL: Implicit Discriminative Knowledge Learning for Visible-Infrared Person Re-Identification. (https://arxiv.org/abs/2403.11708)
-## Environmental requirements:
-
-python == 3.7
-PyTorch == 1.10.1
-ignite == 0.2.1
-torchvision == 0.11.2
-apex == 0.1
-
-## Training:
-
-To train the model, you can use following command:
-
-SYSU-MM01:
-```Shell
-python train.py --cfg ./configs/SYSU.yml
-```
-
-RegDB:
-```Shell
-python train.py --cfg ./configs/RegDB.yml
-```
-
-RegDB:
-```Shell
-python train.py --cfg ./configs/RegDB.yml
-```
-
+- Change:
+    - start_eval: 40
+    - eval_interval: 5
+    - early_stopping_patience: 10 
+    - num_epoch: 160
+    - _process_func function and create_eval_engine function in `engine.py`
+    - Revive old epoch_completed_callback function in `engine/__init__.py`
