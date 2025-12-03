@@ -1,7 +1,2 @@
-- Change:
-    - start_eval: 40
-    - eval_interval: 5
-    - early_stopping_patience: 10 
-    - num_epoch: 160
-    - _process_func function and create_eval_engine function in `engine.py`
-    - Revive old epoch_completed_callback function in `engine/__init__.py`
+- Change from develop5 to develop6
+    - Add Class CrossEntropyLabelSmooth to Baseline.py
