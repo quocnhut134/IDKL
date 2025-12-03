@@ -18,6 +18,23 @@ from layers import cbam
 from layers import NonLocalBlockND
 from utils.rerank import re_ranking, pairwise_distance
 
+# Add Label Smooth Cross Entropy Loss
+class CrossEntropyLabelSmooth(nn.Module):
+    def __init__(self, num_classes, epsilon=0.1, use_gpu=True):
+        super(CrossEntropyLabelSmooth, self).__init__()
+        self.num_classes = num_classes
+        self.epsilon = epsilon
+        self.use_gpu = use_gpu
+        self.logsoftmax = nn.LogSoftmax(dim=1)
+
+    def forward(self, inputs, targets):
+        log_probs = self.logsoftmax(inputs)
+        targets = torch.zeros(log_probs.size()).scatter_(1, targets.unsqueeze(1).data.cpu(), 1)
+        if self.use_gpu: targets = targets.cuda()
+        targets = (1 - self.epsilon) * targets + self.epsilon / self.num_classes
+        loss = (- targets * log_probs).mean(0).sum()
+        return loss
+
 def intersect1d(tensor1, tensor2):
     return torch.unique(torch.cat([tensor1[tensor1 == val] for val in tensor2]))
 
@@ -241,8 +258,13 @@ class Baseline(nn.Module):
 
         else:
             self.classifier = nn.Linear(self.base_dim + self.dim * self.part_num, num_classes, bias=False)
-        if self.classification:
-            self.id_loss = nn.CrossEntropyLoss(ignore_index=-1)
+            
+        # if self.classification:
+        #     self.id_loss = nn.CrossEntropyLoss(ignore_index=-1)
+        
+        if self.classification: # Add Label Smooth Cross Entropy Loss
+            self.id_loss = CrossEntropyLabelSmooth(num_classes=num_classes, epsilon=0.1)
+            
         if self.triplet:
             self.triplet_loss = TripletLoss(margin=self.margin)
             self.rerank_loss = RerankLoss(margin=0.7)
