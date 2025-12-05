@@ -1,4 +1,4 @@
-- Change from develop8 to develop9
+- Change from develop9 to develop10
     - Add Class CrossEntropyLabelSmooth to Baseline.py
     - Add new version of class Bottleneck into resnet.py
     - Add ChannelRandomErasing class into data/__init__.py
@@ -7,3 +7,6 @@
     - Change margin from 1.3 to 0.3 in SYSU.yml
     - Turn on rerank
     - Change img_size to (256, 128)
+    - Change p_size to 8, accumulation_step to 4
+    - num_epoch: 200
+    - lr_step: [100, 160]

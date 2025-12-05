@@ -54,7 +54,7 @@ def create_train_engine(model, optimizer, non_blocking=False, fp16=False):
     
     scaler = GradScaler(enabled=fp16)
     
-    accumulation_steps = 8
+    accumulation_steps = 4
 
     # def _process_func(engine, batch):
     #     model.train()

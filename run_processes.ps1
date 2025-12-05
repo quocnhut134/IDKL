@@ -2,9 +2,9 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 Set-Location -Path 'D:\Workspace\Working\IDKL'
 git checkout -b run1
-python train.py --cfg ./configs/SYSU.yml --p_size 4 --k_size 4
+python train.py --cfg ./configs/SYSU.yml --p_size 8 --k_size 4
 git add .
-git commit -m "Complete run with p_size=4 and k_size=4"
+git commit -m "Complete run with p_size=8 and k_size=4"
 git push origin run1
 $SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
 $DestinationPath = "D:\Workspace\Working\new_settings\run1"
