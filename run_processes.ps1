@@ -15,20 +15,20 @@ Remove-Item -Path "$SourcePath\*" -Recurse -Force
 $SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
 Remove-Item -Path "$SourcePath\*" -Recurse -Force
 
-Set-Location -Path 'D:\Workspace\Working\IDKL'
-git checkout -b run2
-python train.py --cfg ./configs/SYSU.yml --p_size 4 --k_size 3
-git add .
-git commit -m "Complete run with p_size=4 and k_size=3"
-git push origin run2
-$SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
-$DestinationPath = "D:\Workspace\Working\new_settings\run2"
-Move-Item -Path "$SourcePath\*" -Destination $DestinationPath
-$SourcePath = "D:\Workspace\Working\IDKL\logs\sysu\SYSU"
-Move-Item -Path "$SourcePath\*" -Destination $DestinationPath
-Remove-Item -Path "$SourcePath\*" -Recurse -Force
-$SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
-Remove-Item -Path "$SourcePath\*" -Recurse -Force
+# Set-Location -Path 'D:\Workspace\Working\IDKL'
+# git checkout -b run2
+# python train.py --cfg ./configs/SYSU.yml --p_size 4 --k_size 3
+# git add .
+# git commit -m "Complete run with p_size=4 and k_size=3"
+# git push origin run2
+# $SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
+# $DestinationPath = "D:\Workspace\Working\new_settings\run2"
+# Move-Item -Path "$SourcePath\*" -Destination $DestinationPath
+# $SourcePath = "D:\Workspace\Working\IDKL\logs\sysu\SYSU"
+# Move-Item -Path "$SourcePath\*" -Destination $DestinationPath
+# Remove-Item -Path "$SourcePath\*" -Recurse -Force
+# $SourcePath = "D:\Workspace\Working\IDKL\checkpoints\sysu\SYSU"
+# Remove-Item -Path "$SourcePath\*" -Recurse -Force
 
 # Set-Location -Path 'D:\Workspace\Working\IDKL'
 # git checkout -b run3
