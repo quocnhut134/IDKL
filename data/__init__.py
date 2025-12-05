@@ -15,6 +15,7 @@ from data.sampler import RandomIdentitySampler
 from data.sampler import NormTripletSampler
 import random
 
+import math
 
 def collate_fn(batch):  # img, label, cam_id, img_path, img_id
     samples = list(zip(*batch))
@@ -66,6 +67,40 @@ class ChannelAdapGray(object):
                 img[1, :, :] = tmp_img
                 img[2, :, :] = tmp_img
         return img
+    
+# Add ChannelRandomErasing
+class ChannelRandomErasing(object):
+    def __init__(self, probability=0.5, sl=0.02, sh=0.4, r1=0.3, mean=[0.4914, 0.4822, 0.4465]):
+        self.probability = probability
+        self.mean = mean
+        self.sl = sl
+        self.sh = sh
+        self.r1 = r1
+
+    def __call__(self, img):
+        if random.uniform(0, 1) > self.probability:
+            return img
+
+        for attempt in range(100):
+            area = img.size()[1] * img.size()[2]
+            target_area = random.uniform(self.sl, self.sh) * area
+            aspect_ratio = random.uniform(self.r1, 1 / self.r1)
+
+            h = int(round(math.sqrt(target_area * aspect_ratio)))
+            w = int(round(math.sqrt(target_area / aspect_ratio)))
+
+            if w < img.size()[2] and h < img.size()[1]:
+                x1 = random.randint(0, img.size()[1] - h)
+                y1 = random.randint(0, img.size()[2] - w)
+                
+                if img.size()[0] == 3:
+                    img[0, x1:x1 + h, y1:y1 + w] = self.mean[0]
+                    img[1, x1:x1 + h, y1:y1 + w] = self.mean[1]
+                    img[2, x1:x1 + h, y1:y1 + w] = self.mean[2]
+                else:
+                    img[0, x1:x1 + h, y1:y1 + w] = self.mean[0]
+                return img
+        return img
 
 def get_train_loader(dataset, root, sample_method, batch_size, p_size, k_size, image_size, random_flip=False, random_crop=False,
                      random_erase=False, color_jitter=False, padding=0, num_workers=4):
@@ -92,7 +127,9 @@ def get_train_loader(dataset, root, sample_method, batch_size, p_size, k_size, i
         t.extend([T.ToTensor(), T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
         if random_erase:
-            t.append(T.RandomErasing())
+            t.append(T.RandomErasing(probability=0.5, scale=(0.02, 0.4))) # Add
+            t.append(ChannelRandomErasing(probability=0.5)) # Add
+            # t.append(T.RandomErasing())
             #t.append(ChannelAdapGray(probability=0.5)) ###58
             # t.append(Jigsaw())
 
