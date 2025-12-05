@@ -22,7 +22,7 @@ center: false
 fb_dt: false
 
 # parameters
-margin: 1.3
+margin: 0.3 # 1.3
 # pattern attention
 num_parts: 6
 weight_sep: 0.1 #0.5

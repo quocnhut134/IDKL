@@ -453,13 +453,38 @@ class embed_net(nn.Module):
 
         return x_sh,  sh_pl, sp_pl,sp_IN,sp_IN_p,x_sp_f,x_sp_f_p
 
+# Old _resnet function
 
+# def _resnet(arch, block, layers, pretrained, progress, **kwargs):
+#     model = ResNet(block, layers, **kwargs)
+#     if pretrained:
+#         state_dict = load_state_dict_from_url(model_urls[arch],
+#                                               progress=progress)
+#         model.load_state_dict(state_dict, strict=False)
+#     return model
+
+# New _resnet function
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet(block, layers, **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=progress)
-        model.load_state_dict(state_dict, strict=False)
+        if arch == 'resnet50':
+            weights_path = 'resnet50_ibn_a-d9d0bb7b.pth'
+            print(f"Loading pretrained IBN weights from: {weights_path}")
+            try:
+                state_dict = torch.load(weights_path)
+                new_state_dict = {}
+                for k, v in state_dict.items():
+                    name = k.replace("module.", "") 
+                    new_state_dict[name] = v
+                model.load_state_dict(new_state_dict, strict=False)
+            except FileNotFoundError as e:
+                print(e)
+                state_dict = load_state_dict_from_url(model_urls[arch], progress=progress)
+                model.load_state_dict(state_dict, strict=False)
+        else:
+            state_dict = load_state_dict_from_url(model_urls[arch],
+                                                  progress=progress)
+            model.load_state_dict(state_dict, strict=False)
     return model
 
 

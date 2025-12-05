@@ -4,3 +4,4 @@ data_dir/
 *.pyc
 SYSU-MM01/
 checkpoints/
+*.pth

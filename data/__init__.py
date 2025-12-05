@@ -128,7 +128,7 @@ def get_train_loader(dataset, root, sample_method, batch_size, p_size, k_size, i
 
         if random_erase:
             t.append(T.RandomErasing(p=0.5, scale=(0.02, 0.4))) # Add
-            # t.append(ChannelRandomErasing(probability=0.5)) # Add
+            t.append(ChannelRandomErasing(probability=0.5)) # Add
             # t.append(T.RandomErasing())
             #t.append(ChannelAdapGray(probability=0.5)) ###58
             # t.append(Jigsaw())
