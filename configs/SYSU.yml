@@ -38,10 +38,10 @@ mutual_learning: false
 modality_attention: 0
 
 # optimizer
-lr: 0.01
-optimizer: sgd
+lr: 0.00035
+optimizer: adam
 num_epoch: 160
-lr_step: [40, 70]
+lr_step: [60, 100] # [40, 70]
 
 # Early stopping
 early_stopping_patience: 10 

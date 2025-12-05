@@ -1,5 +1,8 @@
 - Change from develop6 to develop7
     - Add Class CrossEntropyLabelSmooth to Baseline.py
     - Add new version of class Bottleneck into resnet.py
-    - Add Add ChannelRandomErasing class into data/__init__.py
+    - Add ChannelRandomErasing class into data/__init__.py but not turn it on in this running turn branch
     - Change sample_method to identity_uniform
+    - Change sgd to adam
+    - Change lr from 0.01 to 0.00035
+    - Change lr_step from [40, 70] to [60, 100]
