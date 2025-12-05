@@ -181,7 +181,7 @@ class Bottleneck(nn.Module):
         self.conv1 = conv1x1(inplanes, width)
         
         self.bn1 = nn.BatchNorm2d(width)
-        self.IN = nn.InstanceNorm2d(width, affine=True) if stride == 1 else None 
+        self.IN = nn.InstanceNorm2d(width // 2, affine=True) if stride == 1 else None 
 
         self.conv2 = conv3x3(width, width, stride, groups, dilation)
         self.bn2 = norm_layer(width)
