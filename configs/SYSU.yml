@@ -3,8 +3,8 @@ fp16: True
 
 # dataset
 sample_method: identity_uniform #identity_uniform #identity_random
-image_size: (384, 144) #(384, 144)
-p_size: 4
+image_size: (256, 128) #(384, 144)
+p_size: 8
 k_size: 4
 
 dataset: sysu
@@ -58,4 +58,4 @@ padding: 10
 log_period: 150
 start_eval: 40
 eval_interval: 5
-rerank: False
+rerank: True
