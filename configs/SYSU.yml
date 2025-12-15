@@ -3,7 +3,7 @@ fp16: True
 
 # dataset
 sample_method: identity_uniform #identity_uniform #identity_random
-image_size: (256, 128) #(384, 144)
+image_size: (384, 144) # (256, 128) #(384, 144)
 p_size: 8
 k_size: 4
 
