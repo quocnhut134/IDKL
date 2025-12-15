@@ -35,7 +35,7 @@ def train(cfg):
 
     # training data loader
     train_loader = get_train_loader(dataset=cfg.dataset,
-                                    root='/kaggle/input/sysu-mm01',
+                                    root=cfg.data_root,
                                     sample_method=cfg.sample_method,
                                     batch_size=cfg.batch_size,
                                     p_size=cfg.p_size,
@@ -53,7 +53,7 @@ def train(cfg):
     if cfg.eval_interval > 0:
         if True == False:  # tsne
             query_loader = get_train_loader(dataset=cfg.dataset,
-                                            root='/kaggle/input/sysu-mm01',
+                                            root=cfg.data_root,
                                             sample_method=cfg.sample_method,
                                             batch_size=cfg.batch_size,
                                             p_size=cfg.p_size,
@@ -69,7 +69,7 @@ def train(cfg):
 
         else:
             gallery_loader, query_loader = get_test_loader(dataset=cfg.dataset,
-                                                           root='/kaggle/input/sysu-mm01',
+                                                           root=cfg.data_root,
                                                            batch_size=4,
                                                            image_size=cfg.image_size,
                                                            num_workers=2)
