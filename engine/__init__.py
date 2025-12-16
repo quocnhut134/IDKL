@@ -93,10 +93,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             #     'rand_perm_cam']
             perm = sio.loadmat("/kaggle/input/sysu-mm01/exp/rand_perm_cam.mat")[
                 'rand_perm_cam']
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=10, rerank=engine.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=1, rerank=engine.rerank)
-            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=10, rerank=engine.rerank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=rank) #rerank=engine.rerank
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=10, rerank=rank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=1, rerank=rank)
+            eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='indoor', num_shots=10, rerank=rank)
         elif dataset == 'regdb':
             print('infrared to visible')
             eval_regdb(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
@@ -104,9 +104,9 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
             eval_regdb(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
         elif dataset == 'llcm':
             print('infrared to visible')
-            eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
+            eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=rank)
             print('visible to infrared')
-            eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
+            eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=rank)
 
 
         evaluator.state.feat_list.clear()
@@ -272,7 +272,7 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
 
             if dataset == 'sysu':
                 perm = sio.loadmat("/kaggle/input/sysu-mm01/exp/rand_perm_cam.mat")['rand_perm_cam']
-                mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=engine.rerank)
+                mAP, r1, r5, _, _ = eval_sysu(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, perm, mode='all', num_shots=1, rerank=rank)
             elif dataset == 'regdb':
                 print('infrared to visible')
                 mAP, r1, r5, _, _ = eval_regdb(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
@@ -281,10 +281,10 @@ def get_trainer(dataset, model, optimizer, lr_scheduler=None, logger=None, write
                 r1 = (r1 + r1_) / 2
             elif dataset == 'llcm':
                 print('infrared to visible')
-                mAP, r1, r5, _, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
+                mAP, r1, r5, _, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=rank)
                 #new_all_cmc,mAP, _ = eval_llcm(q_feats, q_ids, q_cams, g_feats, g_ids, g_cams, g_img_paths, rerank=engine.rerank)
                 print('visible to infrared')
-                mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=engine.rerank)
+                mAP, r1_, r5, _, _ = eval_llcm(g_feats, g_ids, g_cams, q_feats, q_ids, q_cams, q_img_paths, rerank=rank)
                 r1 = (r1 + r1_) / 2
             
             if r1 > engine.state.best_rank1:
