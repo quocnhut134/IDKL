@@ -184,6 +184,13 @@ if __name__ == '__main__':
     parser.add_argument('--p_size', default='2', type=str)
     ####################
     parser.add_argument('--k_size', default='2', type=str)
+    
+    ####################
+    parser.add_argument('--weight_sep', default='0.1', type=str)
+    ####################
+    parser.add_argument('--weight_KL', default='0.6', type=str)
+    ####################
+    parser.add_argument('--weight_sid', default='0.8', type=str)
     ####################
     args = parser.parse_args()
 
@@ -217,8 +224,14 @@ if __name__ == '__main__':
         cfg[k] = v
 
     if cfg.sample_method == 'identity_uniform' or 'identity_random': #'identity_uniform' or 'identity_random'
-        cfg.batch_size = int(args.p_size) * int(args.k_size)
-
+        cfg.p_size = int(args.p_size)
+        cfg.k_size = int(args.k_size) 
+        cfg.batch_size = cfg.p_size * cfg.k_size
+       
+    cfg.weight_sep = float(args.weight_sep)
+    cfg.weight_KL = float(args.weight_KL)
+    cfg.weight_sid = float(args.weight_sid)
+    
     cfg.freeze()
 
     train(cfg)

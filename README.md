@@ -1,4 +1,4 @@
-- Change from develop9 to develop10
+- Change from local running to code_kaggle2
     - Add Class CrossEntropyLabelSmooth to Baseline.py
     - Add new version of class Bottleneck into resnet.py
     - Add ChannelRandomErasing class into data/__init__.py
@@ -10,3 +10,5 @@
     - Change p_size to 8, accumulation_step to 4
     - num_epoch: 200
     - lr_step: [100, 160]
+    - Change image_size from (384, 144) to (384, 128)
+    - Parse args for w_sep, w_KL and w_sid to find optimal hyper-paras for batch size 32

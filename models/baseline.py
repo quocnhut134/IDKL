@@ -246,6 +246,10 @@ class Baseline(nn.Module):
         self.TGSA = kwargs.get('distalign', False)
         self.IP = kwargs.get('IP', False)
         self.fb_dt = kwargs.get('fb_dt', False)
+        
+        self.weight_sep = kwargs.get('weight_sep', 0.1)
+        self.weight_KL = kwargs.get('weight_KL', 0.6)
+        self.weight_sid = kwargs.get('weight_sid', 0.8)
 
         if self.decompose:
             self.classifier = nn.Linear(self.base_dim + self.dim * self.part_num, num_classes, bias=False)
@@ -318,7 +322,7 @@ class Baseline(nn.Module):
             metric.update({'tri': trip_loss.data})
 
 
-        bb = 120  #90
+        bb = 32  #90
         if self.TGSA:
 
             sf_sp_dist_v = kl_soft_dist(sp_pl[sub == 0], sp_pl[sub == 0])
@@ -347,7 +351,7 @@ class Baseline(nn.Module):
 
 
             if feat.size(0) == bb:
-                soft_dt = kl_intra + (kl_inter_v + kl_inter_i) * 0.6
+                soft_dt = kl_intra + (kl_inter_v + kl_inter_i) * self.weight_KL
 
 
             else:
@@ -387,7 +391,7 @@ class Baseline(nn.Module):
             loss_F = entropy_margin_loss(l_F, l_F_p, 0)
             loss_m_IN = modal_centroid_loss(gem_p(sp_IN), gem_p(sp_IN_p), labels, sub, 0)
 
-            loss += 0.1 * (loss_F + loss_m_IN)
+            loss += self.weight_sep * (loss_F + loss_m_IN)
             metric.update({'IN_p': loss_m_IN.data})
             metric.update({'F_p': loss_F.data})
 
@@ -430,7 +434,7 @@ class Baseline(nn.Module):
 
 
                 if feat.size(0) == bb:
-                    bg_loss = intra_bg + (inter_bg_v + inter_bg_i) * 0.8  # intra_bg + (inter_bg_v + inter_bg_i) * 0.7
+                    bg_loss = intra_bg + (inter_bg_v + inter_bg_i) * self.weight_sid  # intra_bg + (inter_bg_v + inter_bg_i) * 0.7
 
                 else:
                     bg_loss = intra_bg + (inter_bg_v + inter_bg_i) * 0.3
@@ -444,7 +448,7 @@ class Baseline(nn.Module):
                 _, intra_Sm = Sm_kl(logits[sub == 0], logits[sub == 1], labels)
 
                 if feat.size(0) == bb:
-                    sm_kl_loss = intra_Sm + inter_Sm * 0.8
+                    sm_kl_loss = intra_Sm + inter_Sm * self.weight_sid
 
                 else:
                     sm_kl_loss = intra_Sm + inter_Sm * 0.3
