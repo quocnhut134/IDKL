@@ -10,6 +10,10 @@ strategy_cfg.batch_size = 128
 strategy_cfg.p_size = 16
 strategy_cfg.k_size = 8
 
+#attention 
+strategy_cfg.attn_guidance = False
+strategy_cfg.attn_weight = 0.1
+
 # setting for loss
 strategy_cfg.classification = True
 strategy_cfg.triplet = False
