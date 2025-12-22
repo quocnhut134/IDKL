@@ -207,6 +207,18 @@ class Baseline(nn.Module):
         self.part_num = kwargs.get('num_parts', 0)
 
         self.mutual_learning = kwargs.get('mutual_learning', False) #Add
+        self.use_attn_guidance = kwargs.get('attn_guidance', False)
+
+        if self.use_attn_guidance:
+            self.attn_dim = self.base_dim + self.dim * self.part_num
+
+            self.cross_attn = nn.MultiheadAttention(
+                embed_dim=self.attn_dim,
+                num_heads=2,
+                batch_first=True
+            )
+
+    self.attn_loss_weight = kwargs.get('attn_weight', 0.1)
 
         print("output feat length:{}".format(self.base_dim + self.dim * self.part_num))
         self.bn_neck = nn.BatchNorm1d(self.base_dim + self.dim * self.part_num)
@@ -297,6 +309,29 @@ class Baseline(nn.Module):
 
 
         bb = 120  #90
+        
+        if self.use_attn_guidance:
+            # feat: [B, D]  (shared)
+            # sp_pl: [B, D] (specific, purified)
+
+            B, D = feat.shape
+
+            # reshape to [B, 1, D] for attention
+            q = feat.unsqueeze(1)      # Query = shared
+            k = sp_pl.unsqueeze(1)     # Key   = specific
+            v = sp_pl.unsqueeze(1)     # Value = specific
+
+            # Cross-Attention: shared attends to specific
+            attn_out, _ = self.cross_attn(q, k, v)
+            attn_out = attn_out.squeeze(1)  # [B, D]
+
+            # Consistency loss: align shared feature with attended guidance
+            attn_loss = F.mse_loss(feat, attn_out.detach())
+
+            loss += self.attn_loss_weight * attn_loss
+            metric.update({'attn': attn_loss.data})
+
+
         if self.TGSA:
 
             sf_sp_dist_v = kl_soft_dist(sp_pl[sub == 0], sp_pl[sub == 0])
