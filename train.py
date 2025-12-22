@@ -87,6 +87,8 @@ def train(cfg):
                      mutual_learning=cfg.mutual_learning,
                      decompose=cfg.decompose,
                      drop_last_stride=cfg.drop_last_stride,
+                     attn_guidance = cfg.attn_guidance, // Add
+                     attn_weight = cfg.attn_weight, // Add
                      triplet=cfg.triplet,
                      k_size=cfg.k_size,
                      center_cluster=cfg.center_cluster,
