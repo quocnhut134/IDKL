@@ -21,6 +21,10 @@ triplet: true
 center: false
 fb_dt: false
 
+# attetion
+attn_guidance: True
+attn_weight: 0.1
+
 # parameters
 margin: 0.3 # 1.3
 # pattern attention

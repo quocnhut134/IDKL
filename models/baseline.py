@@ -224,6 +224,18 @@ class Baseline(nn.Module):
         self.part_num = kwargs.get('num_parts', 0)
 
         self.mutual_learning = kwargs.get('mutual_learning', False) #Add
+        self.use_attn_guidance = kwargs.get('attn_guidance', False)
+
+        if self.use_attn_guidance:
+            self.attn_dim = self.base_dim + self.dim * self.part_num
+
+            self.cross_attn = nn.MultiheadAttention(
+                embed_dim=self.attn_dim,
+                num_heads=2,
+                batch_first=True
+            )
+
+        self.attn_loss_weight = kwargs.get('attn_weight', 0.1)
 
         print("output feat length:{}".format(self.base_dim + self.dim * self.part_num))
         self.bn_neck = nn.BatchNorm1d(self.base_dim + self.dim * self.part_num)
