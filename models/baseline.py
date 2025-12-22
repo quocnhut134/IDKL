@@ -218,7 +218,7 @@ class Baseline(nn.Module):
                 batch_first=True
             )
 
-    self.attn_loss_weight = kwargs.get('attn_weight', 0.1)
+        self.attn_loss_weight = kwargs.get('attn_weight', 0.1)
 
         print("output feat length:{}".format(self.base_dim + self.dim * self.part_num))
         self.bn_neck = nn.BatchNorm1d(self.base_dim + self.dim * self.part_num)
