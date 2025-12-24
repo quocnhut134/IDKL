@@ -132,7 +132,7 @@ def train(cfg):
     if hasattr(cfg, 'scheduler_type') and cfg.scheduler_type == 'cosine':
         lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, 
                                                             T_max=cfg.num_epoch, 
-                                                            eta_min=0.00001)
+                                                            eta_min=0.000008)
     else:
         lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                       milestones=cfg.lr_step,
