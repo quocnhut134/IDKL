@@ -59,6 +59,7 @@ pip install -r requirements.txt
 ## Performance on SYSU-MM01
 Comparison of CMC (%) and mAP (%) performances with the Origin IDKL Model on SYSU-MM01 dataset
 
+<img width="847" height="189" alt="Image" src="https://github.com/user-attachments/assets/a37b6fbd-714b-4d94-a3cd-2740f03134e1" />
 
 ## Training Command
 
