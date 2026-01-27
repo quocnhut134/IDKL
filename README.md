@@ -28,6 +28,8 @@ To achieve high accuracy on resource-constrained devices, we moved away from sim
 * **Why for Weak Hardware?** Standard CNNs struggle with the domain gap between RGB and IR images. Instead of adding heavy alignment modules, IBN-Net integrates invariance learning directly into the backbone blocks.
 * **Benefit:** Improves domain generalization significantly with **negligible computational overhead** compared to the baseline.
 
+<img width="974" height="544" alt="Image" src="https://github.com/user-attachments/assets/8dc33af8-310b-4fc3-b0b9-bc681b2f7bd3" />
+
 ### 2. Attention-Guided Feature Refining (Multi-Head Attention)
 * **The Change:** Integration of a **Multi-Head Attention (MHA)** mechanism.
 * **Why for Weak Hardware?** In limited-resolution scenarios (common in CCTV), details matter. MHA allows the model to actively attend to fine-grained discriminative patterns (specific body parts, logos) while suppressing background noise.
